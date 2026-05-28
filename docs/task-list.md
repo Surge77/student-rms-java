@@ -25,11 +25,13 @@ Check off as you go. Each phase = a commit (or a small branch). Details in `phas
 - [x] Tests: repository (@DataJpaTest/H2), service (Mockito), controller (@WebMvcTest)
 - [ ] Postman CRUD cycle (after MySQL up + Phase 8 security note)
 
-## Phase 4 — Subject CRUD
-- [ ] SubjectRequest / SubjectResponse DTOs
-- [ ] SubjectService + impl
-- [ ] SubjectController (5 endpoints)
-- [ ] Postman CRUD cycle passes
+## Phase 4 — Subject CRUD ✅ (20 tests green total)
+- [x] SubjectRequest (@NotBlank name, @Positive maxMarks) / SubjectResponse
+- [x] SubjectService + impl (+ duplicate-name guard, SubjectNotFoundException)
+- [x] SubjectController (5 endpoints)
+- [x] Tests: service (Mockito) + controller (@WebMvcTest)
+- [x] TEMP SecurityConfig permitAll added (so Postman works pre-Phase-8; replaced in Phase 8)
+- [ ] Postman CRUD cycle (needs MySQL running)
 
 ## Phase 5 — Marks + Grade ⭐
 - [ ] GradeCalculatorTest (write first)
