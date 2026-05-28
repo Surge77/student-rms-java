@@ -17,11 +17,13 @@ Check off as you go. Each phase = a commit (or a small branch). Details in `phas
 - [x] 4 repositories with custom finders
 - [ ] Tables auto-created in MySQL with constraints (run app once DB ready)
 
-## Phase 3 — Student CRUD
-- [ ] StudentRequest / StudentResponse DTOs
-- [ ] StudentService + impl
-- [ ] StudentController (5 endpoints)
-- [ ] Postman CRUD cycle passes
+## Phase 3 — Student CRUD ✅ (12 tests green)
+- [x] StudentRequest / StudentResponse DTOs
+- [x] StudentService + impl
+- [x] StudentController (5 endpoints)
+- [x] StudentNotFoundException + DuplicateResourceException (early, reused in Phase 7)
+- [x] Tests: repository (@DataJpaTest/H2), service (Mockito), controller (@WebMvcTest)
+- [ ] Postman CRUD cycle (after MySQL up + Phase 8 security note)
 
 ## Phase 4 — Subject CRUD
 - [ ] SubjectRequest / SubjectResponse DTOs
