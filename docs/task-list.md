@@ -42,11 +42,12 @@ Check off as you go. Each phase = a commit (or a small branch). Details in `phas
 - [x] MarkAlreadyExistsException; duplicate + out-of-range covered by tests
 - [ ] Postman check (needs MySQL running)
 
-## Phase 6 — Results
-- [ ] ResultResponse (+ SubjectResult)
-- [ ] ResultService + impl (aggregate, pass/fail, NO_RESULT case)
-- [ ] ResultController
-- [ ] FAIL when any subject <40; PASS otherwise
+## Phase 6 — Results ✅ (44 tests green total)
+- [x] ResultResponse (+ nested SubjectResult) + ResultStatus enum
+- [x] ResultService + impl (aggregate totals, overall %, per-subject pass/fail, NO_RESULT)
+- [x] ResultController (GET /results/{studentId})
+- [x] FAIL when any subject <40%; PASS otherwise; NO_RESULT when no marks
+- [x] Tests: service (Mockito) — pass/fail/no-result/not-found
 
 ## Phase 7 — Exceptions
 - [ ] 3 custom exceptions
