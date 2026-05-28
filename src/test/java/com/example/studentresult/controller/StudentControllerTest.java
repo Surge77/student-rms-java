@@ -12,6 +12,8 @@ import com.example.studentresult.service.StudentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -66,11 +68,11 @@ class StudentControllerTest {
 
     @Test
     void getAllReturns200() throws Exception {
-        when(studentService.getAll()).thenReturn(java.util.List.of(
-                new StudentResponse(1L, "Asha R", "asha@example.com", "CS-101")));
+        when(studentService.getAll(any(Pageable.class))).thenReturn(new PageImpl<>(java.util.List.of(
+                new StudentResponse(1L, "Asha R", "asha@example.com", "CS-101"))));
 
         mockMvc.perform(get("/students"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].rollNumber").value("CS-101"));
+                .andExpect(jsonPath("$.content[0].rollNumber").value("CS-101"));
     }
 }

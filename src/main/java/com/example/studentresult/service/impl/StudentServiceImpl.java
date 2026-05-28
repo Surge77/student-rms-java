@@ -1,7 +1,5 @@
 package com.example.studentresult.service.impl;
 
-import java.util.List;
-
 import com.example.studentresult.dto.request.StudentRequest;
 import com.example.studentresult.dto.response.StudentResponse;
 import com.example.studentresult.entity.Student;
@@ -10,6 +8,8 @@ import com.example.studentresult.exception.StudentNotFoundException;
 import com.example.studentresult.repository.StudentRepository;
 import com.example.studentresult.service.StudentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,10 +38,8 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<StudentResponse> getAll() {
-        return studentRepository.findAll().stream()
-                .map(this::toResponse)
-                .toList();
+    public Page<StudentResponse> getAll(Pageable pageable) {
+        return studentRepository.findAll(pageable).map(this::toResponse);
     }
 
     @Override

@@ -11,6 +11,8 @@ import com.example.studentresult.dto.response.SubjectResponse;
 import com.example.studentresult.service.SubjectService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -54,10 +56,11 @@ class SubjectControllerTest {
 
     @Test
     void getAllReturns200() throws Exception {
-        when(subjectService.getAll()).thenReturn(java.util.List.of(new SubjectResponse(1L, "Mathematics", 100)));
+        when(subjectService.getAll(any(Pageable.class)))
+                .thenReturn(new PageImpl<>(java.util.List.of(new SubjectResponse(1L, "Mathematics", 100))));
 
         mockMvc.perform(get("/subjects"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name").value("Mathematics"));
+                .andExpect(jsonPath("$.content[0].name").value("Mathematics"));
     }
 }

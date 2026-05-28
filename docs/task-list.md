@@ -79,7 +79,9 @@ Check off as you go. Each phase = a commit (or a small branch). Details in `phas
 - [x] README.md with setup, architecture, API table, grade scale
 - [x] `./mvnw test` green (58 tests)
 
-## Stretch
-- [ ] Pagination on lists
-- [ ] Docker + docker-compose
-- [ ] GitHub Actions CI
+## Stretch ✅ (61 tests green total)
+- [x] Pagination + sorting on GET /students and /subjects (Pageable -> Page)
+- [x] Mark update endpoint PUT /marks/{id} with grade recompute (+ MarkNotFoundException)
+- [x] Docker (multi-stage Dockerfile) + docker-compose (app + MySQL, healthcheck)
+- [x] GitHub Actions CI (build + test on push/PR, H2 so no DB service needed)
+- [x] Env-driven config (SPRING_DATASOURCE_*, APP_JWT_SECRET) with dev defaults

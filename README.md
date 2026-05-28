@@ -11,8 +11,12 @@ architecture, role-based access control, centralized error handling, and a full 
 - **Mark assignment** with automatic, percentage-based grade calculation
 - **Result generation**: per-subject breakdown, overall percentage, pass/fail status
 - **Uniform error contract** through a global `@RestControllerAdvice`
+- **Pagination & sorting** on list endpoints (Spring `Pageable`)
+- **Mark update with grade recompute** (`PUT /marks/{id}`)
 - **Interactive API docs** (Swagger UI with a JWT Authorize button)
-- **58 automated tests** (unit + slice + full-context integration)
+- **Dockerized** (multi-stage Dockerfile + docker-compose for app + MySQL)
+- **CI** via GitHub Actions (build + test on every push/PR)
+- **61 automated tests** (unit + slice + full-context integration)
 
 ## Tech stack
 Java 17 · Spring Boot 3.3 · Spring Data JPA · Spring Security · MySQL 8 ·
@@ -71,6 +75,13 @@ Overall result is **PASS** only if every subject scores >= 40%, else **FAIL**
    ```
 App starts on `http://localhost:8080`. Swagger UI: `http://localhost:8080/swagger-ui.html`.
 
+### Run with Docker (no local Java/MySQL needed)
+```bash
+docker compose up --build
+```
+Starts MySQL + the app together. App on `http://localhost:8080`. Config is passed via
+environment variables (`SPRING_DATASOURCE_*`, `APP_JWT_SECRET`) in `docker-compose.yml`.
+
 ## Authentication flow
 1. `POST /auth/register` — create a user (role `ADMIN` or `USER`).
 2. `POST /auth/login` — returns a JWT.
@@ -85,6 +96,7 @@ App starts on `http://localhost:8080`. Swagger UI: `http://localhost:8080/swagge
 | POST/PUT/DELETE | `/students`, `/subjects` | ADMIN | Manage students/subjects |
 | GET | `/students`, `/subjects` | ADMIN, USER | List/read |
 | POST | `/marks` | ADMIN | Assign a mark (auto-grades) |
+| PUT | `/marks/{id}` | ADMIN | Update a mark (recomputes grade) |
 | GET | `/marks/{studentId}` | ADMIN, USER | Marks for a student |
 | GET | `/results/{studentId}` | ADMIN, USER | Full result card |
 

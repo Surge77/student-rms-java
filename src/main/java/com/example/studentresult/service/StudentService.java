@@ -1,15 +1,15 @@
 package com.example.studentresult.service;
 
-import java.util.List;
-
 import com.example.studentresult.dto.request.StudentRequest;
 import com.example.studentresult.dto.response.StudentResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface StudentService {
 
     StudentResponse create(StudentRequest request);
 
-    List<StudentResponse> getAll();
+    Page<StudentResponse> getAll(Pageable pageable);
 
     StudentResponse getById(Long id);
 

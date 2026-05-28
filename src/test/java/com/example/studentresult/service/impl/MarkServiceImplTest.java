@@ -10,12 +10,14 @@ import static org.mockito.Mockito.when;
 import java.util.Optional;
 
 import com.example.studentresult.dto.request.MarkRequest;
+import com.example.studentresult.dto.request.MarkUpdateRequest;
 import com.example.studentresult.dto.response.MarkResponse;
 import com.example.studentresult.entity.Grade;
 import com.example.studentresult.entity.Mark;
 import com.example.studentresult.entity.Student;
 import com.example.studentresult.entity.Subject;
 import com.example.studentresult.exception.MarkAlreadyExistsException;
+import com.example.studentresult.exception.MarkNotFoundException;
 import com.example.studentresult.exception.StudentNotFoundException;
 import com.example.studentresult.exception.SubjectNotFoundException;
 import com.example.studentresult.repository.MarkRepository;
@@ -114,5 +116,38 @@ class MarkServiceImplTest {
 
         assertThatThrownBy(() -> markService.getByStudent(9L))
                 .isInstanceOf(StudentNotFoundException.class);
+    }
+
+    @Test
+    void updateRecomputesGrade() {
+        Mark existing = Mark.builder().id(10L).student(student()).subject(subject())
+                .marksObtained(82).grade(Grade.A).build();
+        when(markRepository.findById(10L)).thenReturn(Optional.of(existing));
+        when(gradeCalculator.calculate(30, 100)).thenReturn(Grade.F);
+        when(markRepository.save(any(Mark.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        MarkResponse res = markService.update(10L, new MarkUpdateRequest(30));
+
+        assertThat(res.marksObtained()).isEqualTo(30);
+        assertThat(res.grade()).isEqualTo(Grade.F);
+    }
+
+    @Test
+    void updateThrowsWhenMarkMissing() {
+        when(markRepository.findById(404L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> markService.update(404L, new MarkUpdateRequest(50)))
+                .isInstanceOf(MarkNotFoundException.class);
+    }
+
+    @Test
+    void updateThrowsWhenMarksExceedMax() {
+        Mark existing = Mark.builder().id(10L).student(student()).subject(subject())
+                .marksObtained(82).grade(Grade.A).build();
+        when(markRepository.findById(10L)).thenReturn(Optional.of(existing));
+
+        assertThatThrownBy(() -> markService.update(10L, new MarkUpdateRequest(150)))
+                .isInstanceOf(IllegalArgumentException.class);
+        verify(markRepository, never()).save(any());
     }
 }

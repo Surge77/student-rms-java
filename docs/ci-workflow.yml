@@ -1,0 +1,38 @@
+# GitHub Actions CI workflow for SRMS.
+#
+# This file lives in docs/ because the git credential used here lacks the GitHub
+# `workflow` OAuth scope (it cannot push files under .github/workflows/).
+#
+# To enable CI, copy this file to .github/workflows/ci.yml and push using a
+# credential that has the `workflow` scope, e.g.:
+#   gh auth refresh -s workflow          # add the scope to gh's token
+#   mkdir -p .github/workflows
+#   cp docs/ci-workflow.yml .github/workflows/ci.yml
+#   git add .github/workflows/ci.yml && git commit -m "ci: add GitHub Actions workflow" && git push
+#
+# The actual workflow file is also present locally at .github/workflows/ci.yml
+# (gitignored), so once you have workflow scope you can just commit that path.
+
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Build and run tests
+        run: ./mvnw -B test

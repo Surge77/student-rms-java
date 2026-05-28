@@ -1,7 +1,5 @@
 package com.example.studentresult.service.impl;
 
-import java.util.List;
-
 import com.example.studentresult.dto.request.SubjectRequest;
 import com.example.studentresult.dto.response.SubjectResponse;
 import com.example.studentresult.entity.Subject;
@@ -10,6 +8,8 @@ import com.example.studentresult.exception.SubjectNotFoundException;
 import com.example.studentresult.repository.SubjectRepository;
 import com.example.studentresult.service.SubjectService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,10 +34,8 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<SubjectResponse> getAll() {
-        return subjectRepository.findAll().stream()
-                .map(this::toResponse)
-                .toList();
+    public Page<SubjectResponse> getAll(Pageable pageable) {
+        return subjectRepository.findAll(pageable).map(this::toResponse);
     }
 
     @Override

@@ -3,11 +3,13 @@ package com.example.studentresult.service.impl;
 import java.util.List;
 
 import com.example.studentresult.dto.request.MarkRequest;
+import com.example.studentresult.dto.request.MarkUpdateRequest;
 import com.example.studentresult.dto.response.MarkResponse;
 import com.example.studentresult.entity.Mark;
 import com.example.studentresult.entity.Student;
 import com.example.studentresult.entity.Subject;
 import com.example.studentresult.exception.MarkAlreadyExistsException;
+import com.example.studentresult.exception.MarkNotFoundException;
 import com.example.studentresult.exception.StudentNotFoundException;
 import com.example.studentresult.exception.SubjectNotFoundException;
 import com.example.studentresult.repository.MarkRepository;
@@ -51,6 +53,22 @@ public class MarkServiceImpl implements MarkService {
                 .grade(gradeCalculator.calculate(request.marksObtained(), subject.getMaxMarks()))
                 .build();
 
+        return toResponse(markRepository.save(mark));
+    }
+
+    @Override
+    @Transactional
+    public MarkResponse update(Long markId, MarkUpdateRequest request) {
+        Mark mark = markRepository.findById(markId)
+                .orElseThrow(() -> new MarkNotFoundException(markId));
+
+        int maxMarks = mark.getSubject().getMaxMarks();
+        if (request.marksObtained() < 0 || request.marksObtained() > maxMarks) {
+            throw new IllegalArgumentException("marksObtained must be between 0 and " + maxMarks);
+        }
+
+        mark.setMarksObtained(request.marksObtained());
+        mark.setGrade(gradeCalculator.calculate(request.marksObtained(), maxMarks));
         return toResponse(markRepository.save(mark));
     }
 

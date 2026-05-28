@@ -40,7 +40,11 @@ Req:
 Res 201: `StudentResponse`.
 
 ### GET /students   `USER|ADMIN`
-Res 200: `[ StudentResponse ]`.
+Paginated. Query params: `page` (0-based), `size`, `sort` (e.g. `?page=0&size=10&sort=name,asc`).
+Res 200: Spring `Page` envelope:
+```json
+{ "content": [ /* StudentResponse */ ], "totalElements": 1, "totalPages": 1, "number": 0, "size": 20 }
+```
 
 ### GET /students/{id}   `USER|ADMIN`
 Res 200: `StudentResponse`. 404 if missing.
@@ -85,6 +89,11 @@ Res 201:
 ```
 Errors: 404 (student/subject missing), 409 (mark already exists for pair),
 400 (marksObtained < 0 or > maxMarks).
+
+### PUT /marks/{id}   `ADMIN`
+Update marks for an existing mark; grade is recomputed.
+Req: `{ "marksObtained": 91 }`
+Res 200: updated `MarkResponse` (new grade). 404 if mark missing, 400 if out of range.
 
 ### GET /marks/{studentId}   `USER|ADMIN`
 Res 200: `[ MarkResponse ]` for that student. 404 if student missing.

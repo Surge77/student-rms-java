@@ -1,12 +1,12 @@
 package com.example.studentresult.controller;
 
-import java.util.List;
-
 import com.example.studentresult.dto.request.StudentRequest;
 import com.example.studentresult.dto.response.StudentResponse;
 import com.example.studentresult.service.StudentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,8 +34,8 @@ public class StudentController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<List<StudentResponse>> getAll() {
-        return ResponseEntity.ok(studentService.getAll());
+    public ResponseEntity<Page<StudentResponse>> getAll(Pageable pageable) {
+        return ResponseEntity.ok(studentService.getAll(pageable));
     }
 
     @GetMapping("/{id}")

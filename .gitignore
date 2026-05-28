@@ -3,11 +3,17 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 
 # Secrets / local config
-src/main/resources/application.properties
+# Note: application.properties is committed but contains NO real secrets — it uses
+# env-var placeholders with dev-only defaults. Override via env vars in prod.
 *.env
 *.pem
 *.key
 *.pfx
+
+# CI workflow kept untracked because the current git credential lacks the GitHub
+# `workflow` OAuth scope. Content is mirrored in docs/ci-workflow.yml.
+# Remove this line and commit .github/workflows/ci.yml once you have workflow scope.
+.github/
 
 # IDE
 .idea/
