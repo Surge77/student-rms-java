@@ -33,13 +33,14 @@ Check off as you go. Each phase = a commit (or a small branch). Details in `phas
 - [x] TEMP SecurityConfig permitAll added (so Postman works pre-Phase-8; replaced in Phase 8)
 - [ ] Postman CRUD cycle (needs MySQL running)
 
-## Phase 5 — Marks + Grade ⭐
-- [ ] GradeCalculatorTest (write first)
-- [ ] GradeCalculator
-- [ ] MarkRequest / MarkResponse DTOs
-- [ ] MarkService + impl (load, dup-check, range-check, grade, save)
-- [ ] MarkController (POST, GET by student)
-- [ ] duplicate → 409, out-of-range → 400
+## Phase 5 — Marks + Grade ⭐ ✅ (40 tests green total)
+- [x] GradeCalculatorTest (written first, all boundaries + maxMarks<=0)
+- [x] GradeCalculator (@Component, pure percentage logic)
+- [x] MarkRequest / MarkResponse DTOs
+- [x] MarkService + impl (load, dup-check, range-check, grade, save)
+- [x] MarkController (POST, GET by student)
+- [x] MarkAlreadyExistsException; duplicate + out-of-range covered by tests
+- [ ] Postman check (needs MySQL running)
 
 ## Phase 6 — Results
 - [ ] ResultResponse (+ SubjectResult)
