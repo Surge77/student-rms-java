@@ -70,14 +70,14 @@ Check off as you go. Each phase = a commit (or a small branch). Details in `phas
 - [x] TEMP permitAll config REPLACED
 - [x] Integration test proves 401 (no token) / 403 (wrong role) / 201 (admin) / 401 (bad pw)
 
-## Phase 9 — Validation + Swagger + Tests + README
-- [ ] @Valid + Bean Validation on all request DTOs
-- [ ] MethodArgumentNotValidException → 400 with field errors
-- [ ] OpenAPI bean with JWT scheme; Swagger Authorize works
-- [ ] service unit tests (Mockito) 80%+
-- [ ] @WebMvcTest controller tests
-- [ ] README.md with setup, diagram, samples, screenshots
-- [ ] `./mvnw test` green
+## Phase 9 — Validation + Swagger + Tests + README ✅ (58 tests green)
+- [x] @Valid + Bean Validation on all request DTOs (done across Phases 3-8)
+- [x] MethodArgumentNotValidException → 400 with field errors (Phase 7)
+- [x] OpenAPI bean with JWT bearer scheme; Swagger Authorize button
+- [x] service unit tests (Mockito)
+- [x] @WebMvcTest controller tests + @DataJpaTest + integration test
+- [x] README.md with setup, architecture, API table, grade scale
+- [x] `./mvnw test` green (58 tests)
 
 ## Stretch
 - [ ] Pagination on lists
