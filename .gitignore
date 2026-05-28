@@ -1,0 +1,25 @@
+# Build
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Secrets / local config
+src/main/resources/application.properties
+*.env
+*.pem
+*.key
+*.pfx
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
