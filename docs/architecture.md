@@ -40,6 +40,11 @@ User (auth) ── role
 **Mark**: `id`, `marksObtained`, `grade`, `student` (ManyToOne), `subject` (ManyToOne).
   - Unique constraint on `(student_id, subject_id)` → one mark per student/subject pair.
 **User**: `id`, `username` (unique), `password` (BCrypt hash), `role` (enum ADMIN/USER).
+  Mapped to table `app_user` — `user` is a SQL reserved word.
+
+Note: `Mark`'s `@ManyToOne` relations use `FetchType.LAZY` (not the EAGER default)
+to avoid unnecessary joins; entity→DTO mapping happens inside the service transaction
+so lazy proxies resolve fine.
 
 ### Why Mark is an entity, not a join table
 It carries data beyond the relationship (`marksObtained`, `grade`). A pure

@@ -11,11 +11,11 @@ Check off as you go. Each phase = a commit (or a small branch). Details in `phas
 - [ ] Copy → application.properties, fill credentials + JWT secret
 - [ ] `./mvnw spring-boot:run` boots clean
 
-## Phase 2 — Entities & Repositories
-- [ ] Student, Subject, Mark entities
-- [ ] User, Role enum, Grade enum
-- [ ] 4 repositories with custom finders
-- [ ] Tables auto-created in MySQL with constraints
+## Phase 2 — Entities & Repositories ✅ (code done; verify tables after DB up)
+- [x] Student, Subject, Mark entities
+- [x] User, Role enum, Grade enum
+- [x] 4 repositories with custom finders
+- [ ] Tables auto-created in MySQL with constraints (run app once DB ready)
 
 ## Phase 3 — Student CRUD
 - [ ] StudentRequest / StudentResponse DTOs
