@@ -58,15 +58,17 @@ Check off as you go. Each phase = a commit (or a small branch). Details in `phas
 - [x] No placeholders to swap — custom exceptions used from the start
 - [x] Tests: 404/409/400 error shape verified via @WebMvcTest
 
-## Phase 8 — Auth + JWT + RBAC
-- [ ] RegisterRequest / LoginRequest / AuthResponse
-- [ ] AuthService + impl (register, login)
-- [ ] JwtUtil (generate/parse/validate)
-- [ ] CustomUserDetailsService
-- [ ] JwtFilter
-- [ ] SecurityConfig (filter chain, public matchers, BCrypt, @EnableMethodSecurity)
-- [ ] @PreAuthorize on write/read endpoints
-- [ ] 401 no token, 403 wrong role, 200 right role
+## Phase 8 — Auth + JWT + RBAC ✅ (58 tests green total)
+- [x] RegisterRequest / LoginRequest / AuthResponse / RegisterResponse
+- [x] AuthService + impl (register w/ BCrypt + dup guard, login via AuthenticationManager)
+- [x] JwtUtil (generate/parse/validate, constructor-injected secret)
+- [x] CustomUserDetailsService (ROLE_ prefix authorities)
+- [x] JwtFilter (OncePerRequestFilter; wired as @Bean in SecurityConfig)
+- [x] SecurityConfig: stateless, public /auth + swagger, JWT filter, BCrypt,
+      @EnableMethodSecurity, 401 entry point
+- [x] @PreAuthorize: ADMIN writes, ADMIN+USER reads (students/subjects/marks/results)
+- [x] TEMP permitAll config REPLACED
+- [x] Integration test proves 401 (no token) / 403 (wrong role) / 201 (admin) / 401 (bad pw)
 
 ## Phase 9 — Validation + Swagger + Tests + README
 - [ ] @Valid + Bean Validation on all request DTOs
