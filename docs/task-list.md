@@ -49,12 +49,14 @@ Check off as you go. Each phase = a commit (or a small branch). Details in `phas
 - [x] FAIL when any subject <40%; PASS otherwise; NO_RESULT when no marks
 - [x] Tests: service (Mockito) — pass/fail/no-result/not-found
 
-## Phase 7 — Exceptions
-- [ ] 3 custom exceptions
-- [ ] ErrorResponse DTO
-- [ ] GlobalExceptionHandler (@RestControllerAdvice)
-- [ ] swap placeholders → custom exceptions
-- [ ] all errors return {status,message,timestamp}
+## Phase 7 — Exceptions ✅ (47 tests green total)
+- [x] Custom exceptions (added incrementally Phases 3-5: StudentNotFound,
+      SubjectNotFound, MarkAlreadyExists, DuplicateResource)
+- [x] ErrorResponse DTO (status, message, timestamp)
+- [x] GlobalExceptionHandler (@RestControllerAdvice): 404 / 409 / 400 / 400-validation
+      (field messages) / 403 / 500-generic
+- [x] No placeholders to swap — custom exceptions used from the start
+- [x] Tests: 404/409/400 error shape verified via @WebMvcTest
 
 ## Phase 8 — Auth + JWT + RBAC
 - [ ] RegisterRequest / LoginRequest / AuthResponse
