@@ -1,6 +1,5 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: ['class'],
   content: ['./index.html', './src/**/*.{js,jsx}'],
   theme: {
     extend: {
@@ -38,32 +37,33 @@ export default {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
+        // Ink swatches for grade / status stamps
+        ink: {
+          green: 'hsl(var(--ink-green))',
+          blue: 'hsl(var(--ink-blue))',
+          amber: 'hsl(var(--ink-amber))',
+          red: 'hsl(var(--ink-red))',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        md: 'calc(var(--radius) - 1px)',
+        sm: 'calc(var(--radius) - 2px)',
       },
       fontFamily: {
-        sans: ['Geist', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        display: ['Outfit', 'Geist', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['"Libre Caslon Display"', 'Georgia', 'serif'],
+        sans: ['Newsreader', 'Georgia', 'serif'],
+        serif: ['Newsreader', 'Georgia', 'serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
       keyframes: {
-        aurora: {
-          '0%, 100%': { transform: 'translate3d(0, 0, 0) scale(1)' },
-          '33%': { transform: 'translate3d(5%, -4%, 0) scale(1.12)' },
-          '66%': { transform: 'translate3d(-4%, 5%, 0) scale(0.94)' },
-        },
-        'fade-up': {
-          from: { opacity: '0', transform: 'translateY(14px)' },
-          to: { opacity: '1', transform: 'translateY(0)' },
+        'fade-in': {
+          from: { opacity: '0' },
+          to: { opacity: '1' },
         },
       },
       animation: {
-        aurora: 'aurora 22s ease-in-out infinite',
-        'aurora-rev': 'aurora 28s ease-in-out infinite reverse',
-        'fade-up': 'fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both',
+        'fade-in': 'fade-in 0.3s ease-out both',
       },
     },
   },

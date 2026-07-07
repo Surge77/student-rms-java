@@ -2,39 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===========================================================================
+   THE REGISTRAR'S LEDGER
+   An academic-archival system: aged exam-book paper, examiner's oxblood ink,
+   prussian record-blue, engraved rules and rubber-stamp marks.
+=========================================================================== */
 @layer base {
   :root {
-    /* Warm charcoal neutrals, temperature-matched to the amber accent */
-    --background: 30 8% 7%;
-    --foreground: 40 12% 92%;
+    /* Aged ledger paper */
+    --background: 42 34% 89%;
+    --foreground: 30 16% 12%;
 
-    --card: 30 8% 10%;
-    --card-foreground: 40 12% 92%;
+    /* A cleaner sheet laid on the desk */
+    --card: 44 47% 96%;
+    --card-foreground: 30 16% 12%;
 
-    --popover: 30 9% 11%;
-    --popover-foreground: 40 12% 92%;
+    --popover: 44 47% 96%;
+    --popover-foreground: 30 16% 12%;
 
-    /* Desaturated honey amber — the one deliberate accent (sat < 80%) */
-    --primary: 38 74% 54%;
-    --primary-foreground: 30 35% 8%;
+    /* Examiner's red — the one voice of authority (used like a red pen) */
+    --primary: 6 61% 43%;
+    --primary-foreground: 44 47% 96%;
 
-    --secondary: 30 6% 16%;
-    --secondary-foreground: 40 12% 92%;
+    /* Registrar's ink blue */
+    --secondary: 210 30% 87%;
+    --secondary-foreground: 210 44% 24%;
 
-    --muted: 30 6% 14%;
-    --muted-foreground: 38 6% 58%;
+    /* Manila / faded record */
+    --muted: 40 24% 84%;
+    --muted-foreground: 32 12% 40%;
 
-    --accent: 38 40% 15%;
-    --accent-foreground: 38 70% 72%;
+    /* Pale red margin wash */
+    --accent: 8 46% 89%;
+    --accent-foreground: 6 56% 37%;
 
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 60% 40%;
+    --destructive-foreground: 44 47% 96%;
 
-    --border: 30 7% 18%;
-    --input: 30 8% 13%;
-    --ring: 38 74% 54%;
+    /* Ruled ledger line */
+    --border: 38 20% 71%;
+    --input: 44 47% 96%;
+    --ring: 6 61% 43%;
 
-    --radius: 0.625rem;
+    --radius: 0.25rem;
+
+    /* Inks used for grade/status stamps (not part of the shadcn token set) */
+    --ink-green: 148 42% 30%;
+    --ink-blue: 210 44% 30%;
+    --ink-amber: 36 68% 34%;
+    --ink-red: 6 61% 43%;
   }
 
   * {
@@ -42,36 +58,147 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    font-feature-settings: 'ss01', 'cv01';
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+    /* Paper grain + faint horizontal ledger ruling for archival depth */
+    background-image:
+      linear-gradient(hsl(38 20% 71% / 0.16) 1px, transparent 1px),
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    background-size:
+      100% 2.15rem,
+      200px 200px;
+    background-attachment: fixed, fixed;
   }
 
-  /* Display font on primary headings — propagates app-wide */
   h1,
-  h2 {
-    @apply font-display tracking-tight;
+  h2,
+  h3 {
+    @apply font-display;
+    letter-spacing: -0.01em;
   }
 
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 10px;
+    height: 10px;
   }
   ::-webkit-scrollbar-track {
-    background: hsl(var(--muted));
+    background: transparent;
   }
   ::-webkit-scrollbar-thumb {
     background: hsl(var(--border));
-    border-radius: 3px;
+    border: 3px solid hsl(var(--background));
+    border-radius: 0;
   }
   ::-webkit-scrollbar-thumb:hover {
     background: hsl(var(--muted-foreground));
   }
 }
 
+@layer components {
+  /* A clean sheet on the desk — the recurring surface. */
+  .sheet {
+    @apply border border-border bg-card;
+    box-shadow:
+      0 1px 0 0 hsl(38 20% 71% / 0.6),
+      0 18px 40px -28px hsl(30 30% 20% / 0.45);
+  }
+
+  /* The red margin rule of ruled ledger paper. */
+  .margin-rule {
+    position: relative;
+  }
+  .margin-rule::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 2.25rem;
+    width: 1px;
+    background: hsl(var(--primary) / 0.35);
+    pointer-events: none;
+  }
+
+  /* Engraved double rule under a masthead. */
+  .double-rule {
+    border-bottom: 3px double hsl(var(--foreground) / 0.55);
+  }
+
+  /* Rubber-stamp chip: inked border, monospace, faintly rotated. */
+  .stamp {
+    @apply inline-flex items-center justify-center border font-mono font-bold uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* Engraved seal border for certificates / report cards. */
+  .engraved {
+    box-shadow:
+      inset 0 0 0 1px hsl(var(--foreground) / 0.5),
+      inset 0 0 0 4px hsl(var(--card)),
+      inset 0 0 0 5px hsl(var(--foreground) / 0.28);
+  }
+}
+
 @layer utilities {
-  /* Fractal-noise grain overlay for atmospheric depth */
-  .grain {
+  .paper-grain {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     background-size: 180px 180px;
+  }
+
+  /* Staggered page-load reveal. */
+  @keyframes ink-rise {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .ink-rise {
+    animation: ink-rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  .d-1 {
+    animation-delay: 0.06s;
+  }
+  .d-2 {
+    animation-delay: 0.13s;
+  }
+  .d-3 {
+    animation-delay: 0.22s;
+  }
+  .d-4 {
+    animation-delay: 0.32s;
+  }
+  .d-5 {
+    animation-delay: 0.42s;
+  }
+
+  /* The stamp being pressed down onto the page. */
+  @keyframes stamp-in {
+    0% {
+      opacity: 0;
+      transform: rotate(var(--rot, -4deg)) scale(1.5);
+    }
+    60% {
+      opacity: 1;
+      transform: rotate(var(--rot, -4deg)) scale(0.94);
+    }
+    100% {
+      transform: rotate(var(--rot, -4deg)) scale(1);
+    }
+  }
+  .stamp-in {
+    animation: stamp-in 0.45s cubic-bezier(0.3, 1.4, 0.5, 1) both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

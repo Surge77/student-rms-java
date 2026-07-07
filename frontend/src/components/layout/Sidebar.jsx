@@ -5,15 +5,14 @@ import {
   BookOpen,
   ClipboardText as ClipboardList,
   ChartBar as BarChart3,
-  GraduationCap,
   SignOut as LogOut,
 } from '@phosphor-icons/react'
 import { useAuth } from '../../store/AuthContext'
 import { cn } from '../../lib/utils'
-import { Separator } from '../ui/separator'
+import { Seal } from '../shared/Seal'
 
 const navItems = [
-  { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { to: '/dashboard', icon: LayoutDashboard, label: 'Registry' },
   { to: '/students', icon: Users, label: 'Students' },
   { to: '/subjects', icon: BookOpen, label: 'Subjects' },
   { to: '/marks', icon: ClipboardList, label: 'Marks' },
@@ -24,46 +23,63 @@ export function Sidebar() {
   const { auth, logout } = useAuth()
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-40 flex w-60 flex-col border-r border-border bg-card">
-      {/* Brand */}
-      <div className="flex h-16 items-center gap-2.5 border-b border-border px-5">
-        <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/15">
-          <GraduationCap className="h-4.5 w-4.5 text-primary" />
-        </div>
-        <div>
-          <p className="text-sm font-semibold tracking-tight text-foreground">SRMS</p>
-          <p className="text-[10px] text-muted-foreground leading-none">Result Management</p>
+    <aside className="fixed inset-y-0 left-0 z-40 flex w-60 flex-col border-r border-border bg-card/70 backdrop-blur-sm">
+      {/* Masthead */}
+      <div className="border-b-[3px] border-double border-foreground/40 px-5 py-5">
+        <div className="flex items-center gap-3 text-foreground">
+          <Seal className="h-9 w-9 text-primary" />
+          <div className="leading-none">
+            <p className="font-display text-xl tracking-tight">S · R · M · S</p>
+            <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
+              Office of the Registrar
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto px-3 py-4">
-        <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
-          Navigation
+      {/* Index */}
+      <nav className="flex-1 overflow-y-auto px-3 py-5">
+        <p className="mb-3 px-2 font-mono text-[9px] font-bold uppercase tracking-[0.24em] text-muted-foreground/70">
+          Index
         </p>
         <ul className="space-y-0.5">
-          {navItems.map(({ to, icon: Icon, label }) => (
+          {navItems.map(({ to, icon: Icon, label }, i) => (
             <li key={to}>
               <NavLink
                 to={to}
                 className={({ isActive }) =>
                   cn(
-                    'group flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-all duration-100',
+                    'group relative flex items-center gap-3 rounded-sm px-2.5 py-2 text-[15px] transition-colors',
                     isActive
-                      ? 'bg-primary/10 text-primary font-medium'
-                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                      ? 'text-primary'
+                      : 'text-foreground/70 hover:bg-foreground/[0.05] hover:text-foreground'
                   )
                 }
               >
                 {({ isActive }) => (
                   <>
-                    <Icon
+                    {isActive && (
+                      <span className="absolute inset-y-1 left-0 w-[3px] rounded-full bg-primary" />
+                    )}
+                    <span
                       className={cn(
-                        'h-4 w-4 flex-shrink-0',
-                        isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'
+                        'font-mono text-[10px] tabular-nums',
+                        isActive ? 'text-primary' : 'text-muted-foreground/60'
                       )}
+                    >
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <Icon
+                      className={cn('h-4 w-4 flex-shrink-0', isActive && 'text-primary')}
+                      weight={isActive ? 'fill' : 'regular'}
                     />
-                    {label}
+                    <span
+                      className={cn(
+                        isActive && 'underline decoration-primary/50 decoration-1 underline-offset-4'
+                      )}
+                    >
+                      {label}
+                    </span>
                   </>
                 )}
               </NavLink>
@@ -72,27 +88,22 @@ export function Sidebar() {
         </ul>
       </nav>
 
-      {/* User section */}
-      <div className="px-3 pb-4">
-        <Separator className="mb-4" />
-        <div className="mb-1 rounded-md px-3 py-2">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-primary/20 text-xs font-semibold text-primary">
-              {auth?.user?.username?.[0]?.toUpperCase()}
-            </div>
-            <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-foreground">
-                {auth?.user?.username}
-              </p>
-              <span className="inline-block rounded bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold text-primary">
-                {auth?.user?.role}
-              </span>
-            </div>
+      {/* Signatory */}
+      <div className="border-t border-border px-3 py-4">
+        <div className="mb-2 flex items-center gap-2.5 px-1.5">
+          <div className="engraved flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-card font-display text-base text-primary">
+            {auth?.user?.username?.[0]?.toUpperCase()}
+          </div>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-medium text-foreground">{auth?.user?.username}</p>
+            <span className="font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+              {auth?.user?.role === 'ADMIN' ? 'Registrar' : 'Reader'} · {auth?.user?.role}
+            </span>
           </div>
         </div>
         <button
           onClick={logout}
-          className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-red-400"
+          className="flex w-full items-center gap-3 rounded-sm px-2.5 py-2 text-sm text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
         >
           <LogOut className="h-4 w-4" />
           Sign out

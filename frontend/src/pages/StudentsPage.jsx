@@ -14,6 +14,7 @@ import { Skeleton } from '../components/ui/skeleton'
 import { Alert } from '../components/ui/alert'
 import { EmptyState } from '../components/shared/EmptyState'
 import { ConfirmDialog } from '../components/shared/ConfirmDialog'
+import { Masthead } from '../components/shared/Masthead'
 import {
   Table, TableHeader, TableBody, TableRow, TableHead, TableCell,
 } from '../components/ui/table'
@@ -32,17 +33,17 @@ function StudentForm({ defaultValues, onSubmit, loading, error }) {
       <div className="space-y-1.5">
         <Label>Full Name</Label>
         <Input placeholder="e.g. Asha Reddy" {...register('name')} />
-        {errors.name && <p className="text-xs text-red-400">{errors.name.message}</p>}
+        {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
       </div>
       <div className="space-y-1.5">
         <Label>Email</Label>
         <Input type="email" placeholder="e.g. asha@example.com" {...register('email')} />
-        {errors.email && <p className="text-xs text-red-400">{errors.email.message}</p>}
+        {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
       </div>
       <div className="space-y-1.5">
         <Label>Roll Number</Label>
         <Input placeholder="e.g. CS-101" {...register('rollNumber')} />
-        {errors.rollNumber && <p className="text-xs text-red-400">{errors.rollNumber.message}</p>}
+        {errors.rollNumber && <p className="text-xs text-destructive">{errors.rollNumber.message}</p>}
       </div>
     </form>
   )
@@ -87,19 +88,19 @@ export function StudentsPage() {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Students</h1>
-          <p className="mt-0.5 text-sm text-muted-foreground">
-            {data ? `${data.totalElements} enrolled` : 'Loading…'}
-          </p>
-        </div>
-        {isAdmin && (
-          <Button onClick={() => { setFormError(''); setAddOpen(true) }}>
-            <Plus className="mr-1.5 h-4 w-4" /> Add Student
-          </Button>
-        )}
-      </div>
+      <Masthead
+        index="01"
+        title="Students"
+        subtitle="The enrolment register."
+        meta={data ? `${data.totalElements} on record` : 'Loading…'}
+        action={
+          isAdmin && (
+            <Button onClick={() => { setFormError(''); setAddOpen(true) }}>
+              <Plus className="mr-1.5 h-4 w-4" /> Add Student
+            </Button>
+          )
+        }
+      />
 
       {isLoading ? (
         <div className="space-y-2">
@@ -129,12 +130,12 @@ export function StudentsPage() {
               {students.map((s) => (
                 <TableRow key={s.id}>
                   <TableCell>
-                    <span className="font-mono text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+                    <span className="stamp rounded-sm border-foreground/25 bg-foreground/[0.04] px-1.5 py-0.5 text-[11px] text-foreground/80">
                       {s.rollNumber}
                     </span>
                   </TableCell>
                   <TableCell className="font-medium">{s.name}</TableCell>
-                  <TableCell className="text-muted-foreground">{s.email}</TableCell>
+                  <TableCell className="italic text-muted-foreground">{s.email}</TableCell>
                   {isAdmin && (
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1">
@@ -148,7 +149,7 @@ export function StudentsPage() {
                         <Button
                           size="icon"
                           variant="ghost"
-                          className="hover:text-red-400 hover:bg-red-400/10"
+                          className="hover:bg-destructive/10 hover:text-destructive"
                           onClick={() => setDeleteTarget(s)}
                         >
                           <Trash2 className="h-3.5 w-3.5" />

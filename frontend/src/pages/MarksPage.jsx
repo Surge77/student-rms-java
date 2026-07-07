@@ -11,6 +11,7 @@ import { markSchema, updateMarkSchema } from '../lib/schemas'
 import { useAuth } from '../store/AuthContext'
 import { GradeBadge } from '../components/shared/GradeBadge'
 import { EmptyState } from '../components/shared/EmptyState'
+import { Masthead } from '../components/shared/Masthead'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { Label } from '../components/ui/label'
@@ -71,23 +72,24 @@ export function MarksPage() {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Marks</h1>
-          <p className="mt-0.5 text-sm text-muted-foreground">
-            Select a student to view or manage their marks
-          </p>
-        </div>
-        {isAdmin && selectedStudentId && (
-          <Button onClick={() => { setFormError(''); setAddOpen(true) }}>
-            <Plus className="mr-1.5 h-4 w-4" /> Add Mark
-          </Button>
-        )}
-      </div>
+      <Masthead
+        index="03"
+        title="Marks"
+        subtitle="Select a student to consult or amend their marks."
+        action={
+          isAdmin && selectedStudentId && (
+            <Button onClick={() => { setFormError(''); setAddOpen(true) }}>
+              <Plus className="mr-1.5 h-4 w-4" /> Add Mark
+            </Button>
+          )
+        }
+      />
 
       {/* Student selector */}
-      <div className="mb-6 max-w-sm">
-        <Label className="mb-1.5 block">Student</Label>
+      <div className="ink-rise d-1 mb-6 max-w-sm">
+        <Label className="mb-1.5 block font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+          Student
+        </Label>
         <Select value={selectedStudentId} onValueChange={setSelectedStudentId}>
           <SelectTrigger>
             <SelectValue placeholder="Select a student…" />
@@ -136,8 +138,8 @@ export function MarksPage() {
             {marks.map((m) => (
               <TableRow key={m.id}>
                 <TableCell className="font-medium">{m.subjectName}</TableCell>
-                <TableCell className="font-mono tabular-nums">{m.marksObtained}</TableCell>
-                <TableCell className="font-mono tabular-nums text-muted-foreground">{m.maxMarks}</TableCell>
+                <TableCell className="font-mono text-base font-bold tabular-nums">{m.marksObtained}</TableCell>
+                <TableCell className="font-mono tabular-nums text-muted-foreground">/ {m.maxMarks}</TableCell>
                 <TableCell className="font-mono tabular-nums">
                   {((m.marksObtained / m.maxMarks) * 100).toFixed(1)}%
                 </TableCell>
@@ -226,12 +228,12 @@ function AddMarkForm({ studentId, subjects, onSubmit, loading, error }) {
             ))}
           </SelectContent>
         </Select>
-        {errors.subjectId && <p className="text-xs text-red-400">Select a subject</p>}
+        {errors.subjectId && <p className="text-xs text-destructive">Select a subject</p>}
       </div>
       <div className="space-y-1.5">
         <Label>Marks Obtained</Label>
         <Input type="number" min={0} placeholder="e.g. 82" {...register('marksObtained')} />
-        {errors.marksObtained && <p className="text-xs text-red-400">{errors.marksObtained.message}</p>}
+        {errors.marksObtained && <p className="text-xs text-destructive">{errors.marksObtained.message}</p>}
       </div>
     </form>
   )
@@ -248,7 +250,7 @@ function EditMarkForm({ mark, onSubmit, loading, error }) {
       <div className="space-y-1.5">
         <Label>Marks Obtained (max {mark.maxMarks})</Label>
         <Input type="number" min={0} max={mark.maxMarks} {...register('marksObtained')} />
-        {errors.marksObtained && <p className="text-xs text-red-400">{errors.marksObtained.message}</p>}
+        {errors.marksObtained && <p className="text-xs text-destructive">{errors.marksObtained.message}</p>}
       </div>
     </form>
   )

@@ -1,28 +1,36 @@
 import { useQuery } from '@tanstack/react-query'
-import { Users, BookOpen, ClipboardText as ClipboardList, ChartBar as BarChart3, ArrowRight } from '@phosphor-icons/react'
+import { Users, BookOpen, ClipboardText as ClipboardList, ChartBar as BarChart3, ArrowRight, ShieldCheck } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
 import { getStudents } from '../api/students'
 import { getSubjects } from '../api/subjects'
 import { useAuth } from '../store/AuthContext'
 import { StatCard } from '../components/shared/StatCard'
+import { Masthead } from '../components/shared/Masthead'
 import { Skeleton } from '../components/ui/skeleton'
-import { Button } from '../components/ui/button'
 
 function StatSkeleton() {
   return (
-    <div className="rounded-lg border border-border bg-card p-6">
-      <Skeleton className="mb-2 h-3 w-24" />
-      <Skeleton className="mt-2 h-8 w-16" />
+    <div className="sheet rounded-sm p-5">
+      <Skeleton className="mb-4 h-3 w-10" />
+      <Skeleton className="h-9 w-16" />
+      <Skeleton className="mt-5 h-3 w-24" />
     </div>
   )
 }
 
-const quickLinks = [
-  { to: '/students', label: 'View Students', icon: Users, description: 'Browse enrolled students' },
-  { to: '/subjects', label: 'View Subjects', icon: BookOpen, description: 'Browse all subjects' },
-  { to: '/marks', label: 'Check Marks', icon: ClipboardList, description: 'View marks by student' },
-  { to: '/results', label: 'View Results', icon: BarChart3, description: 'Academic result cards' },
+const registers = [
+  { to: '/students', label: 'Students', icon: Users, description: 'The enrolment register' },
+  { to: '/subjects', label: 'Subjects', icon: BookOpen, description: 'The syllabus of record' },
+  { to: '/marks', label: 'Marks', icon: ClipboardList, description: 'Marks entered per student' },
+  { to: '/results', label: 'Results', icon: BarChart3, description: 'Examination result cards' },
 ]
+
+function getGreeting() {
+  const h = new Date().getHours()
+  if (h < 12) return 'Good morning'
+  if (h < 17) return 'Good afternoon'
+  return 'Good evening'
+}
 
 export function DashboardPage() {
   const { auth, isAdmin } = useAuth()
@@ -37,86 +45,97 @@ export function DashboardPage() {
     queryFn: () => getSubjects(0, 1),
   })
 
+  const today = new Date().toLocaleDateString(undefined, {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+
   return (
     <div>
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-foreground">
-          Good morning, {auth?.user?.username}
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Here&apos;s an overview of the system.
-        </p>
-      </div>
+      <Masthead
+        index="00"
+        title={`${getGreeting()}, ${auth?.user?.username}.`}
+        subtitle="The state of the record, at a glance."
+        meta={today}
+      />
 
-      {/* Stats */}
-      <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+      {/* Ledger figures */}
+      <div className="ink-rise d-1 mb-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
         {studentsLoading ? (
           <StatSkeleton />
         ) : (
           <StatCard
-            title="Total Students"
+            index="01"
+            title="Students Enrolled"
             value={students?.totalElements ?? '—'}
             icon={Users}
-            description="Enrolled in the system"
+            description="On the register"
           />
         )}
         {subjectsLoading ? (
           <StatSkeleton />
         ) : (
           <StatCard
-            title="Total Subjects"
+            index="02"
+            title="Subjects of Record"
             value={subjects?.totalElements ?? '—'}
             icon={BookOpen}
-            description="Active subjects"
+            description="In the syllabus"
           />
         )}
         <StatCard
-          title="Your Role"
-          value={auth?.user?.role}
-          icon={isAdmin ? ClipboardList : BarChart3}
-          description={isAdmin ? 'Full CRUD access' : 'Read-only access'}
+          index="03"
+          title="Your Standing"
+          value={isAdmin ? 'Registrar' : 'Reader'}
+          icon={ShieldCheck}
+          description={isAdmin ? 'Full authority' : 'Read-only'}
         />
         <StatCard
-          title="System"
-          value="Online"
+          index="04"
+          title="The Ledger"
+          value="Open"
           icon={BarChart3}
-          description="Backend connected"
+          description="Records available"
         />
       </div>
 
-      {/* Quick links */}
-      <div>
-        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-          Quick access
+      {/* Registers */}
+      <section className="ink-rise d-2">
+        <h2 className="mb-4 font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-muted-foreground">
+          The Registers
         </h2>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {quickLinks.map(({ to, label, icon: Icon, description }) => (
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {registers.map(({ to, label, icon: Icon, description }, i) => (
             <Link
               key={to}
               to={to}
-              className="group flex items-center justify-between rounded-lg border border-border bg-card p-4 transition-all hover:border-primary/40 hover:bg-card"
+              className="sheet group flex items-center justify-between rounded-sm px-5 py-4 transition-all hover:-translate-y-0.5"
             >
-              <div className="flex items-center gap-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10 transition-colors group-hover:bg-primary/20">
-                  <Icon className="h-4 w-4 text-primary" />
-                </div>
+              <div className="flex items-center gap-4">
+                <span className="font-mono text-[11px] tabular-nums text-primary">
+                  № {String(i + 1).padStart(2, '0')}
+                </span>
+                <Icon className="h-5 w-5 text-foreground/70" weight="duotone" />
                 <div>
-                  <p className="text-sm font-medium text-foreground">{label}</p>
-                  <p className="text-xs text-muted-foreground">{description}</p>
+                  <p className="font-display text-lg leading-none text-foreground">{label}</p>
+                  <p className="mt-1 text-[13px] italic text-muted-foreground">{description}</p>
                 </div>
               </div>
-              <ArrowRight className="h-4 w-4 flex-shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+              <ArrowRight className="h-4 w-4 flex-shrink-0 -translate-x-1 text-muted-foreground opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
             </Link>
           ))}
         </div>
-      </div>
+      </section>
 
       {isAdmin && (
-        <div className="mt-8 rounded-lg border border-primary/20 bg-primary/5 p-5">
-          <p className="text-sm font-medium text-primary">Admin access active</p>
-          <p className="mt-0.5 text-xs text-muted-foreground">
-            You can create, edit and delete students, subjects, and marks.
+        <div className="ink-rise d-3 margin-rule mt-8 rounded-sm border border-primary/30 bg-primary/[0.06] py-4 pl-14 pr-5">
+          <p className="font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-primary">
+            Registrar's seal active
+          </p>
+          <p className="mt-1 text-[13px] italic text-muted-foreground">
+            You may create, amend, and strike records for students, subjects, and marks.
           </p>
         </div>
       )}

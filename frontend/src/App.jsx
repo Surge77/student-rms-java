@@ -43,13 +43,15 @@ export default function App() {
           </Routes>
         </BrowserRouter>
         <Toaster
-          theme="dark"
+          theme="light"
           position="top-right"
           toastOptions={{
             style: {
-              background: 'hsl(222 22% 10%)',
-              border: '1px solid hsl(222 22% 18%)',
-              color: 'hsl(213 31% 91%)',
+              background: 'hsl(44 47% 96%)',
+              border: '1px solid hsl(38 20% 71%)',
+              color: 'hsl(30 16% 12%)',
+              fontFamily: 'Newsreader, Georgia, serif',
+              borderRadius: '2px',
             },
           }}
         />

@@ -14,6 +14,7 @@ import { Skeleton } from '../components/ui/skeleton'
 import { Alert } from '../components/ui/alert'
 import { EmptyState } from '../components/shared/EmptyState'
 import { ConfirmDialog } from '../components/shared/ConfirmDialog'
+import { Masthead } from '../components/shared/Masthead'
 import {
   Table, TableHeader, TableBody, TableRow, TableHead, TableCell,
 } from '../components/ui/table'
@@ -32,12 +33,12 @@ function SubjectForm({ defaultValues, onSubmit, error }) {
       <div className="space-y-1.5">
         <Label>Subject Name</Label>
         <Input placeholder="e.g. Mathematics" {...register('name')} />
-        {errors.name && <p className="text-xs text-red-400">{errors.name.message}</p>}
+        {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
       </div>
       <div className="space-y-1.5">
         <Label>Maximum Marks</Label>
         <Input type="number" placeholder="e.g. 100" {...register('maxMarks')} />
-        {errors.maxMarks && <p className="text-xs text-red-400">{errors.maxMarks.message}</p>}
+        {errors.maxMarks && <p className="text-xs text-destructive">{errors.maxMarks.message}</p>}
       </div>
     </form>
   )
@@ -82,19 +83,19 @@ export function SubjectsPage() {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Subjects</h1>
-          <p className="mt-0.5 text-sm text-muted-foreground">
-            {data ? `${data.totalElements} subjects` : 'Loading…'}
-          </p>
-        </div>
-        {isAdmin && (
-          <Button onClick={() => { setFormError(''); setAddOpen(true) }}>
-            <Plus className="mr-1.5 h-4 w-4" /> Add Subject
-          </Button>
-        )}
-      </div>
+      <Masthead
+        index="02"
+        title="Subjects"
+        subtitle="The syllabus of record."
+        meta={data ? `${data.totalElements} subjects` : 'Loading…'}
+        action={
+          isAdmin && (
+            <Button onClick={() => { setFormError(''); setAddOpen(true) }}>
+              <Plus className="mr-1.5 h-4 w-4" /> Add Subject
+            </Button>
+          )
+        }
+      />
 
       {isLoading ? (
         <div className="space-y-2">
@@ -122,7 +123,9 @@ export function SubjectsPage() {
                 <TableRow key={s.id}>
                   <TableCell className="font-medium">{s.name}</TableCell>
                   <TableCell>
-                    <span className="font-mono text-sm tabular-nums">{s.maxMarks}</span>
+                    <span className="font-mono text-sm tabular-nums text-foreground/80">
+                      / {s.maxMarks}
+                    </span>
                   </TableCell>
                   {isAdmin && (
                     <TableCell className="text-right">
@@ -130,7 +133,7 @@ export function SubjectsPage() {
                         <Button size="icon" variant="ghost" onClick={() => { setFormError(''); setEditTarget(s) }}>
                           <Pencil className="h-3.5 w-3.5" />
                         </Button>
-                        <Button size="icon" variant="ghost" className="hover:text-red-400 hover:bg-red-400/10" onClick={() => setDeleteTarget(s)}>
+                        <Button size="icon" variant="ghost" className="hover:bg-destructive/10 hover:text-destructive" onClick={() => setDeleteTarget(s)}>
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
                       </div>

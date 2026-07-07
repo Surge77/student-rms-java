@@ -1,8 +1,9 @@
 import { cn } from '../../lib/utils'
 
+/** Ledger table: engraved frame, ruled rows, small-caps header. */
 function Table({ className, ...props }) {
   return (
-    <div className="relative w-full overflow-auto rounded-lg border border-border">
+    <div className="sheet relative w-full overflow-auto rounded-sm">
       <table className={cn('w-full caption-bottom text-sm', className)} {...props} />
     </div>
   )
@@ -11,21 +12,29 @@ function Table({ className, ...props }) {
 function TableHeader({ className, ...props }) {
   return (
     <thead
-      className={cn('border-b border-border bg-muted/40', className)}
+      className={cn('border-b-[3px] border-double border-foreground/50 bg-muted/40', className)}
       {...props}
     />
   )
 }
 
 function TableBody({ className, ...props }) {
-  return <tbody className={cn('[&_tr:last-child]:border-0', className)} {...props} />
+  return (
+    <tbody
+      className={cn(
+        '[&_tr:last-child]:border-0 [&_tr:nth-child(even)]:bg-foreground/[0.025]',
+        className
+      )}
+      {...props}
+    />
+  )
 }
 
 function TableRow({ className, ...props }) {
   return (
     <tr
       className={cn(
-        'border-b border-border/60 transition-colors hover:bg-muted/30',
+        'border-b border-border transition-colors hover:bg-primary/[0.05]',
         className
       )}
       {...props}
@@ -37,7 +46,7 @@ function TableHead({ className, ...props }) {
   return (
     <th
       className={cn(
-        'h-11 px-4 text-left align-middle text-xs font-medium uppercase tracking-wider text-muted-foreground',
+        'h-11 px-4 text-left align-middle font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground',
         className
       )}
       {...props}

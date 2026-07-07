@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { ChartBar as BarChart3, TrendUp as TrendingUp, TrendDown as TrendingDown, Minus } from '@phosphor-icons/react'
+import { ChartBar as BarChart3 } from '@phosphor-icons/react'
 import { getResult } from '../api/results'
 import { getAllStudents } from '../api/students'
 import { GradeBadge } from '../components/shared/GradeBadge'
 import { EmptyState } from '../components/shared/EmptyState'
+import { Masthead } from '../components/shared/Masthead'
+import { Seal } from '../components/shared/Seal'
 import { Skeleton } from '../components/ui/skeleton'
 import { Label } from '../components/ui/label'
 import {
@@ -14,24 +16,24 @@ import {
   Table, TableHeader, TableBody, TableRow, TableHead, TableCell,
 } from '../components/ui/table'
 
-function StatusPill({ status }) {
-  if (status === 'PASS') {
-    return (
-      <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/15 px-3 py-1 text-sm font-semibold text-emerald-400">
-        <TrendingUp className="h-3.5 w-3.5" /> PASS
-      </span>
-    )
+/* PASS/FAIL rendered as an inked rubber stamp pressed onto the transcript. */
+function VerdictStamp({ status }) {
+  const map = {
+    PASS: { label: 'Passed', cls: 'border-ink-green/70 text-ink-green bg-ink-green/[0.06]', rot: '-5deg' },
+    FAIL: { label: 'Failed', cls: 'border-ink-red/70 text-ink-red bg-ink-red/[0.06]', rot: '4deg' },
   }
-  if (status === 'FAIL') {
-    return (
-      <span className="inline-flex items-center gap-1.5 rounded-full border border-red-500/40 bg-red-500/15 px-3 py-1 text-sm font-semibold text-red-400">
-        <TrendingDown className="h-3.5 w-3.5" /> FAIL
-      </span>
-    )
-  }
+  const v =
+    map[status] ?? {
+      label: 'No Result',
+      cls: 'border-muted-foreground/60 text-muted-foreground bg-muted/40',
+      rot: '-2deg',
+    }
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted px-3 py-1 text-sm font-semibold text-muted-foreground">
-      <Minus className="h-3.5 w-3.5" /> NO RESULT
+    <span
+      className={`stamp-in stamp select-none rounded-sm border-[3px] px-5 py-2 text-xl tracking-[0.12em] ${v.cls}`}
+      style={{ '--rot': v.rot, transform: `rotate(${v.rot})` }}
+    >
+      {v.label}
     </span>
   )
 }
@@ -54,16 +56,16 @@ export function ResultsPage() {
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-foreground">Results</h1>
-        <p className="mt-0.5 text-sm text-muted-foreground">
-          Academic result card per student
-        </p>
-      </div>
+      <Masthead
+        index="04"
+        title="Results"
+        subtitle="Official examination transcript, issued per student."
+      />
 
-      {/* Student selector */}
-      <div className="mb-8 max-w-sm">
-        <Label className="mb-1.5 block">Student</Label>
+      <div className="ink-rise d-1 mb-8 max-w-sm">
+        <Label className="mb-1.5 block font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+          Student
+        </Label>
         <Select value={selectedStudentId} onValueChange={setSelectedStudentId}>
           <SelectTrigger>
             <SelectValue placeholder="Select a student…" />
@@ -81,116 +83,152 @@ export function ResultsPage() {
       {!selectedStudentId ? (
         <EmptyState
           icon={BarChart3}
-          title="No student selected"
-          description="Select a student to view their academic result card."
+          title="No transcript selected"
+          description="Choose a student to issue their examination transcript."
         />
       ) : isLoading ? (
         <ResultSkeleton />
       ) : isError ? (
-        <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-6 text-sm text-red-400">
-          Failed to load result. The student may have no marks recorded.
+        <div className="sheet rounded-sm border-l-2 border-destructive p-6 text-sm text-destructive">
+          Unable to issue transcript — the student may have no marks recorded.
         </div>
       ) : (
-        <ResultCard result={result} />
+        <Transcript result={result} />
       )}
     </div>
   )
 }
 
-function ResultCard({ result }) {
+function Transcript({ result }) {
   const hasSubjects = result.subjects?.length > 0
 
   return (
-    <div className="rounded-lg border border-border bg-card">
-      {/* Header */}
-      <div className="border-b border-border p-6">
-        <div className="flex items-start justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-              Academic Result
-            </p>
-            <h2 className="mt-1 text-xl font-bold text-foreground">{result.studentName}</h2>
-            <p className="mt-0.5 text-sm text-muted-foreground">
-              Roll No.{' '}
-              <span className="font-mono text-xs bg-muted px-1.5 py-0.5 rounded text-foreground">
-                {result.rollNumber}
-              </span>
+    <div className="sheet engraved ink-rise rounded-sm p-8 sm:p-10">
+      {/* Letterpress header */}
+      <div className="flex items-start justify-between gap-6 border-b-[3px] border-double border-foreground/50 pb-6">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2 text-primary">
+            <Seal className="h-6 w-6" />
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em]">
+              Official Transcript
             </p>
           </div>
-          <StatusPill status={result.status} />
+          <h2 className="mt-3 font-display text-4xl leading-none text-foreground">
+            {result.studentName}
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Roll No.{' '}
+            <span className="stamp rounded-sm border-foreground/25 bg-foreground/[0.04] px-1.5 py-0.5 text-[11px] text-foreground/80">
+              {result.rollNumber}
+            </span>
+          </p>
+        </div>
+        <div className="flex-shrink-0 pt-1">
+          <VerdictStamp status={result.status} />
         </div>
       </div>
 
-      {/* Subject table */}
+      {/* Marks ledger */}
       {hasSubjects ? (
-        <div className="p-6 pb-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Subject</TableHead>
-                <TableHead>Marks</TableHead>
-                <TableHead>Max</TableHead>
-                <TableHead>%</TableHead>
-                <TableHead>Grade</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+        <div className="mt-7 overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-foreground/30 text-left font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+                <th className="pb-2 pr-4 font-bold">Subject</th>
+                <th className="pb-2 px-4 text-right font-bold">Marks</th>
+                <th className="pb-2 px-4 text-right font-bold">Max</th>
+                <th className="pb-2 px-4 text-right font-bold">%</th>
+                <th className="pb-2 pl-4 text-right font-bold">Grade</th>
+              </tr>
+            </thead>
+            <tbody>
               {result.subjects.map((s, i) => (
-                <TableRow key={i}>
-                  <TableCell className="font-medium">{s.subjectName}</TableCell>
-                  <TableCell className="font-mono tabular-nums">{s.marksObtained}</TableCell>
-                  <TableCell className="font-mono tabular-nums text-muted-foreground">{s.maxMarks}</TableCell>
-                  <TableCell className="font-mono tabular-nums">
+                <tr key={i} className="border-b border-border">
+                  <td className="py-3 pr-4 font-medium">{s.subjectName}</td>
+                  <td className="py-3 px-4 text-right font-mono text-base font-bold tabular-nums">
+                    {s.marksObtained}
+                  </td>
+                  <td className="py-3 px-4 text-right font-mono tabular-nums text-muted-foreground">
+                    {s.maxMarks}
+                  </td>
+                  <td className="py-3 px-4 text-right font-mono tabular-nums">
                     {((s.marksObtained / s.maxMarks) * 100).toFixed(1)}%
-                  </TableCell>
-                  <TableCell><GradeBadge grade={s.grade} /></TableCell>
-                </TableRow>
+                  </td>
+                  <td className="py-3 pl-4 text-right">
+                    <GradeBadge grade={s.grade} />
+                  </td>
+                </tr>
               ))}
-            </TableBody>
-          </Table>
+            </tbody>
+          </table>
         </div>
       ) : (
-        <div className="p-6 text-sm text-muted-foreground">
-          No marks recorded for this student yet.
-        </div>
+        <p className="mt-7 text-sm italic text-muted-foreground">
+          No marks have been recorded for this student yet.
+        </p>
       )}
 
-      {/* Summary footer */}
-      <div className="mt-6 border-t border-border px-6 py-5">
-        <div className="grid grid-cols-3 gap-6">
-          <div>
-            <p className="text-xs text-muted-foreground uppercase tracking-wider">Total Marks</p>
-            <p className="mt-1 text-xl font-bold tabular-nums text-foreground">
-              {result.totalMarksObtained}
-              <span className="text-sm font-normal text-muted-foreground">
-                {' '}/{' '}{result.totalMaxMarks}
-              </span>
-            </p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground uppercase tracking-wider">Percentage</p>
-            <p className="mt-1 text-xl font-bold tabular-nums text-foreground">
-              {result.overallPercentage?.toFixed(2)}%
-            </p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground uppercase tracking-wider">Status</p>
-            <div className="mt-1.5">
-              <StatusPill status={result.status} />
-            </div>
-          </div>
+      {/* Ledger footer: the tallied result */}
+      <div className="mt-8 grid grid-cols-2 gap-6 border-t-[3px] border-double border-foreground/50 pt-6 sm:grid-cols-3">
+        <Tally label="Total Marks">
+          <span className="font-display text-3xl text-foreground">{result.totalMarksObtained}</span>
+          <span className="font-mono text-sm text-muted-foreground"> / {result.totalMaxMarks}</span>
+        </Tally>
+        <Tally label="Percentage">
+          <span className="font-display text-3xl text-foreground">
+            {result.overallPercentage?.toFixed(2)}
+            <span className="text-xl">%</span>
+          </span>
+        </Tally>
+        <Tally label="Verdict">
+          <span
+            className={
+              result.status === 'PASS'
+                ? 'font-display text-3xl text-ink-green'
+                : result.status === 'FAIL'
+                  ? 'font-display text-3xl text-ink-red'
+                  : 'font-display text-3xl text-muted-foreground'
+            }
+          >
+            {result.status === 'PASS' ? 'Passed' : result.status === 'FAIL' ? 'Failed' : '—'}
+          </span>
+        </Tally>
+      </div>
+
+      {/* Registrar's footer line */}
+      <div className="mt-8 flex items-end justify-between">
+        <p className="max-w-xs text-[11px] italic leading-snug text-muted-foreground">
+          Issued from the office of the registrar. Grades computed under the standard scheme.
+        </p>
+        <div className="text-right">
+          <div className="mb-1 h-8 w-40 border-b border-foreground/40" />
+          <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
+            Registrar's signature
+          </p>
         </div>
       </div>
+    </div>
+  )
+}
+
+function Tally({ label, children }) {
+  return (
+    <div>
+      <p className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+        {label}
+      </p>
+      <p className="mt-1.5 tabular-nums">{children}</p>
     </div>
   )
 }
 
 function ResultSkeleton() {
   return (
-    <div className="rounded-lg border border-border bg-card p-6">
-      <Skeleton className="mb-4 h-6 w-48" />
-      <Skeleton className="mb-2 h-4 w-32" />
-      <div className="mt-6 space-y-3">
+    <div className="sheet rounded-sm p-8">
+      <Skeleton className="mb-3 h-4 w-32" />
+      <Skeleton className="mb-2 h-9 w-64" />
+      <Skeleton className="h-4 w-28" />
+      <div className="mt-8 space-y-3">
         {Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-10 w-full" />)}
       </div>
     </div>
